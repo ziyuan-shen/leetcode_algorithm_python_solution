@@ -8,17 +8,14 @@ class Solution:
     def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
         def insertNode(l, value):
             node = ListNode(value)
-            if value<= l.val:
-                node.next = l
-                return node
-            currentList = l
-            nextList = l.next
-            while nextList != None and value>nextList.val:
-                currentList = currentList.next
-                nextList = currentList.next
-            currentList.next = node
-            node.next = nextList
-            return l
+            prehead = ListNode(-1)
+            prehead.next = l
+            reserve = prehead
+            while prehead.next != None and value>prehead.next.val:
+                prehead = prehead.next
+            node.next = prehead.next
+            prehead.next = node
+            return reserve.next
             
         if l1==None and l2==None:
             return None
@@ -31,4 +28,4 @@ class Solution:
             while currentList != None:
                 l1 = insertNode(l1, currentList.val)
                 currentList = currentList.next
-            return l1s
+            return l1
