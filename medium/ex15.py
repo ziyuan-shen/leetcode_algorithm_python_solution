@@ -1,13 +1,23 @@
-class Solution:
-    def threeSum(self, nums: List[int]) -> List[List[int]]:
+class Solution(object):
+    def threeSum(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
         nums.sort()
-        two_list = []
-        solutions = []
-        for i in range(len(nums)-2):
-            for j in range(i+1, len(nums)-1):
-                if not ([nums[i], nums[j]] in two_list or [nums[j], nums[i]] in two_list):
-                    two_list.append([nums[i], nums[j]])
-                    third = 0 - nums[i] - nums[j]
-                    if third in nums[j+1:]:
-                        solutions.append([nums[i], nums[j], third])
-        return solutions
+        solutions = set()
+        length = len(nums)
+        for i in range(1, length-1):
+            l = 0
+            r = length-1
+            while l<i and r>i:
+                if nums[l]+nums[i]+nums[r]==0:
+                    if (nums[l], nums[i], nums[r]) not in solutions:
+                        solutions.add((nums[l], nums[i], nums[r]))
+                    r -= 1
+                    l += 1
+                elif nums[l]+nums[i]+nums[r]>0:
+                    r -= 1
+                else:
+                    l += 1
+        return list(map(list, solutions))
