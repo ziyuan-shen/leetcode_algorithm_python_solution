@@ -6,18 +6,19 @@ class Solution:
             x = node[0]
             y = node[1]
             if x>=0 and x<len(board) and y>=0 and y<len(board[0]):
-                neighbour_sum += board[x][y]
+                if board[x][y] == -1 or board[x][y] == 1:
+                    neighbour_sum += 1
         return neighbour_sum
     
     def update_cell(self, cell, neighbour_sum):
         if cell==0:
             if neighbour_sum == 3:
-                return 1
+                return 2
             else:
                 return 0
         else:
             if neighbour_sum < 2 or neighbour_sum > 3:
-                return 0
+                return -1
             else:
                 return 1
         
@@ -25,10 +26,12 @@ class Solution:
         """
         Do not return anything, modify board in-place instead.
         """
-        ans = [([0] * len(board[0])) for i in range(len(board))]
         for i in range(len(board)):
             for j in range(len(board[0])):
-                ans[i][j] = self.update_cell(board[i][j], self.getNeighbourSum(i, j, board))
+                board[i][j] = self.update_cell(board[i][j], self.getNeighbourSum(i, j, board))
         for i in range(len(board)):
             for j in range(len(board[0])):
-                board[i][j] = ans[i][j]
+                if board[i][j] == -1:
+                    board[i][j] = 0
+                if board[i][j] == 2:
+                    board[i][j] = 1
