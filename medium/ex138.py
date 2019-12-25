@@ -11,21 +11,26 @@ class Solution:
         if head == None:
             return None
         head_copied = Node(x = head.val)
-        p1 = head.next
-        p2 = head_copied
-        while p1 != None:
-            p2.next = Node(x = p1.val)
-            p1 = p1.next
-            p2 = p2.next
+        visited = {head:head_copied}
         p1 = head
         p2 = head_copied
         while p1 != None:
-            p3 = head
-            p4 = head_copied
-            while p1.random != p3 and p3 != None:
-                p3 = p3.next
-                p4 = p4.next
-            p2.random = p4
+            if p1.next not in visited:
+                if p1.next == None:
+                    p2.next = None
+                else:
+                    visited[p1.next] = Node(x = p1.next.val)
+                    p2.next = visited[p1.next]
+            else:
+                p2.next = visited[p1.next]
+            if p1.random not in visited:
+                if p1.random == None:
+                    p2.random = None
+                else:
+                    visited[p1.random] = Node(x = p1.random.val)
+                    p2.random = visited[p1.random]
+            else:
+                p2.random = visited[p1.random]
             p1 = p1.next
             p2 = p2.next
         return head_copied
