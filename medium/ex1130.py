@@ -1,11 +1,8 @@
 class Solution:
-    def mctFromLeafValues(self, arr):
-        if len(arr) <= 1:
-            return 0
-        elif len(arr) == 2:
-            return arr[0] * arr[1]
-        else:
-            return min([max(arr[:i]) * max(arr[i:]) + self.mctFromLeafValues(arr[:i]) + self.mctFromLeafValues(arr[i:]) for i in range(1, len(arr))])
-                
-s = Solution()
-print(s.mctFromLeafValues([10,14,7,10,6,14,4,14,4,4,4,15,7,4,9]))
+    def mctFromLeafValues(self, arr: List[int]) -> int:
+        length = len(arr)
+        dp = [[0 for _ in range(length + 1 - i)] for i in range(1, length+1)]
+        for i in range(1, length):
+            for j in range(length-i):
+                dp[i][j] = min([max(arr[j:j+k+1]) * max(arr[j+k+1:j+i+1]) + dp[k][j] + dp[i-k-1][j+k+1] for k in range(i)])
+        return dp[-1][-1]
