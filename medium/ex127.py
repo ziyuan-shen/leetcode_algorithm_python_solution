@@ -12,20 +12,24 @@ class Solution:
                 if sum([wordList[i][k] == wordList[j][k] for k in range(wordlen)]) == wordlen - 1:
                     edges.append([i, j])
         visited = [[0]]
+        visitedseq = [0]
         flag = True
-        while len(visited) < len(wordList) and flag:
+        while len(visitedseq) < len(wordList) and flag:
             flag = False
             prevs = visited[-1]
             visited.append([])
-            for edge in edges:
-                if edge[0] in prevs and edge[1] not in visited:
-                    if wordList[edge[1]] == endWord:
-                        return len(visited)
-                    visited[-1].append(edge[1])
-                    flag = True
-                if edge[1] in prevs and edge[0] not in visited:
-                    if wordList[edge[0]] == endWord:
-                        return len(visited)
-                    visited[-1].append(edge[0])
-                    flag = True
+            for prev in prevs:
+                for edge in edges:
+                    if edge[0] == prev and edge[1] not in visitedseq:
+                        if wordList[edge[1]] == endWord:
+                            return len(visited)
+                        visited[-1].append(edge[1])
+                        visitedseq.append(edge[1])
+                        flag = True
+                    if edge[1] == prev and edge[0] not in visitedseq:
+                        if wordList[edge[0]] == endWord:
+                            return len(visited)
+                        visited[-1].append(edge[0])
+                        visitedseq.append(edge[0])
+                        flag = True
         return 0
