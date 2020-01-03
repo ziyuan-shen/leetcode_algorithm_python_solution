@@ -1,20 +1,31 @@
 class Solution:
-    def ladderLength(self, beginWord, endWord, wordList):
-        length = self.search([beginWord], endWord, wordList)
-        return length if length != float("inf") else 0
-    
-    def search(self, sequence, endWord, wordList):
-        prev = sequence[-1]
-        lengths = []
-        for word in wordList:
-            if word not in sequence and sum([word[i] == prev[i] for i in range(len(prev))]) == len(prev) - 1:
-                if word == endWord:
-                    return len(sequence) + 1
-                lengths.append(self.search(sequence+[word], endWord, wordList))
-        if lengths == []:
-            return float("inf")
-        else:
-            return min(lengths)
-
-s = Solution()
-print(s.ladderLength("qa", "sq", ["si","go","se","cm","so","ph","mt","db","mb","sb","kr","ln","tm","le","av","sm","ar","ci","ca","br","ti","ba","to","ra","fa","yo","ow","sn","ya","cr","po","fe","ho","ma","re","or","rn","au","ur","rh","sr","tc","lt","lo","as","fr","nb","yb","if","pb","ge","th","pm","rb","sh","co","ga","li","ha","hz","no","bi","di","hi","qa","pi","os","uh","wm","an","me","mo","na","la","st","er","sc","ne","mn","mi","am","ex","pt","io","be","fm","ta","tb","ni","mr","pa","he","lr","sq","ye"]))
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
+        if endWord not in wordList:
+            return 0
+        if beginWord in wordList:
+            wordList.remove(beginWord)
+        wordList.insert(0, beginWord)
+        wordlen = len(beginWord)
+        edges = []
+        for i in range(len(wordList)-1):
+            for j in range(i+1, len(wordList)):
+                if sum([wordList[i][k] == wordList[j][k] for k in range(wordlen)]) == wordlen - 1:
+                    edges.append([i, j])
+        visited = [[0]]
+        flag = True
+        while len(visited) < len(wordList) and flag:
+            flag = False
+            prevs = visited[-1]
+            visited.append([])
+            for edge in edges:
+                if edge[0] in prevs and edge[1] not in visited:
+                    if wordList[edge[1]] == endWord:
+                        return len(visited)
+                    visited[-1].append(edge[1])
+                    flag = True
+                if edge[1] in prevs and edge[0] not in visited:
+                    if wordList[edge[0]] == endWord:
+                        return len(visited)
+                    visited[-1].append(edge[0])
+                    flag = True
+        return 0
