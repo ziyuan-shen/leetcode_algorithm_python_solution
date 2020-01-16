@@ -6,8 +6,17 @@ class Solution:
         ops = {"(", ")", "+", "-", "*", "/"}
         while idx < len(s):
             if s[idx] in ops:
-                infix_expression.append(s[idx])
-                idx += 1
+                if s[idx] == "-" and (idx-1 < 0 or s[idx-1] == "("):
+                    idx += 1
+                    num = s[idx]
+                    idx += 1
+                    while idx < len(s) and s[idx] not in ops:
+                        num += s[idx]
+                        idx += 1
+                    infix_expression.append(-int(num))
+                else:
+                    infix_expression.append(s[idx])
+                    idx += 1
             else:
                 num = s[idx]
                 idx += 1
