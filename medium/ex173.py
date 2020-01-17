@@ -8,27 +8,34 @@
 class BSTIterator:
 
     def __init__(self, root: TreeNode):
-        self.data = self.serialize(root)
-        self.count = 0
-        
-    def serialize(self, root):
-        if not root:
-            return []
-        return self.serialize(root.left) + [root.val] + self.serialize(root.right)
+        self.root = root
+        self.stack = []
+        if root:
+            self.stack.append(root)
+            node = root
+            while node.left:
+                self.stack.append(node.left)
+                node = node.left
 
     def next(self) -> int:
         """
         @return the next smallest number
         """
-        self.count += 1
-        return self.data[self.count-1]
+        top = self.stack.pop()
+        if top.right:
+            self.stack.append(top.right)
+            node = top.right
+            while node.left:
+                self.stack.append(node.left)
+                node = node.left
+        return top.val
         
 
     def hasNext(self) -> bool:
         """
         @return whether we have a next smallest number
         """
-        return self.count < len(self.data)
+        return self.stack
         
 
 
