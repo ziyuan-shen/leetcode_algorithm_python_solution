@@ -1,12 +1,24 @@
+from collections import defaultdict
 class Solution:
     def numberOfSubstrings(self, s: str) -> int:
+        if not s:
+            return 0
         ans = 0
-        for p1 in range(len(s)-2):
-            p2 = p1
-            seen = set(s[p1])
-            while len(seen) < 3 and p2 < len(s) - 1:
+        p1 = 0
+        dic = defaultdict(list)
+        dic[s[0]].append(0)
+        p2 = 1
+        while p2 < len(s):
+            while len(dic) < 3 and p2 < len(s):
+                dic[s[p2]].append(p2)
                 p2 += 1
-                seen.add(s[p2])
-            if len(seen) == 3:
-                ans += len(s) - p2
+            if len(dic) == 3:
+                ans += len(s) - p2 + 1
+                while p1 < len(s) and len(dic[s[p1]]) > 1:
+                    dic[s[p1]].pop(0)
+                    ans += len(s) - p2 + 1
+                    p1 += 1
+                if p1 < len(s):
+                    dic.pop(s[p1])
+                    p1 += 1
         return ans
