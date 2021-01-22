@@ -1,36 +1,30 @@
+from collections import defaultdict, OrderedDict
 class Solution:
-    def DFS(self, node_num, edges, visited):
-        if len(visited) == node_num:
-            return [visited]
-        visiteds = []
-        for edge in edges:
-            if edge[0] == visited[-1]:
-                if edge[1] not in visited:
-                    visiteds.extend(self.DFS(node_num, edges, visited + [edge[1]]))
-        return visiteds
-        
+    def useTicket(self, path, graph):
+        if len(path) == self.flights + 1:
+            self.ans.append(path.copy())
+            return True
+        for dest in list(graph[path[-1]].keys()):
+            if graph[path[-1]][dest] > 0:
+                graph[path[-1]][dest] -= 1
+                path.append(dest)
+                res = self.useTicket(path, graph)
+                if res:
+                    return True
+                path.pop()
+                graph[path[-1]][dest] += 1
+        return False
+            
     def findItinerary(self, tickets: List[List[str]]) -> List[str]:
-        node_num = len(tickets)
-        edges = []
-        for i in range(node_num - 1):
-            for j in range(i + 1, node_num):
-                if tickets[i][1] == tickets[j][0]:
-                    edges.append([i, j])
-                if tickets[i][0] == tickets[j][1]:
-                    edges.append([j, i])
-        itineraries = []
-        for i in range(node_num):
-            if tickets[i][0] == 'JFK':
-                itineraries.extend(self.DFS(node_num, edges, [i]))
-        paths = []
-        for itinerary in itineraries:
-            path = []
-            for i in range(node_num):
-                if i == node_num - 1:
-                    path.extend(tickets[itinerary[i]])
-                else:
-                    path.append(tickets[itinerary[i]][0])
-            paths.append(path)
-        paths = ["".join(x) for x in paths]
-        ans = min(paths)
-        return [ans[i:i+3] for i in range(0, len(ans), 3)]
+        graph = defaultdict(OrderedDict)
+        tickets.sort()
+        for ticket in tickets:
+            if ticket[1] in graph[ticket[0]]:
+                graph[ticket[0]][ticket[1]] += 1
+            else:
+                graph[ticket[0]][ticket[1]] = 1
+        self.flights = len(tickets)
+        self.ans = []
+        self.useTicket(["JFK"], graph)
+        self.ans.sort()
+        return self.ans[0]
